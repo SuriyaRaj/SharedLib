@@ -1,6 +1,6 @@
 @Library('SharedLib')_
 
-node(label:'master') 
+node(label:'Master') 
 {
 try
 {
