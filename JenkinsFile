@@ -41,7 +41,7 @@ try
    
    stage('Build docker image for war file and pushing to hub')
    {
-      dDockerImage&Push "suriaraj/project","DockerHub"
+      dockerImage&Push "suriaraj/project","DockerHub"
    }
    
  //################## Storing war in JFrog Artifactory ##############################
