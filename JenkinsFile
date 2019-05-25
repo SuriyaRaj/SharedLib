@@ -20,28 +20,28 @@ try
 
    stage('Initialization and Set up') 
    { 
-      //SetUpfile "https://github.com/SuriyaRaj/MVC.git"
+      setUpfile "https://github.com/SuriyaRaj/MVC.git"
    }
 
 //############ Build and Quality check with Sonar Qube ###########################
 
   stage('Build and Quality check with SonarQube')
   {
-      //SonarQube "SonarQube","MAVEN_HOME","http://23.96.41.202:9000","6fe03b350d2b961468e5d1fc5866c4d7ad11ce56"
+      SonarQube "SonarQube","MAVEN_HOME","http://23.96.41.202:9000","6fe03b350d2b961468e5d1fc5866c4d7ad11ce56"
   }
  
  //#################### Sonar Quality Gate #########################################
      
    stage('Sonar Quality gate')
    {
-       //SonarQualityGate "SonarQube"
+       SonarQualityGate "SonarQube"
    }
   
   //#################### Docker image creation and pushing to Docker hub #################
    
    stage('Build docker image for war file and pushing to hub')
    {
-      //DockerImage&Push "suriaraj/project","DockerHub"
+      DockerImage&Push "suriaraj/project","DockerHub"
    }
    
  //################## Storing war in JFrog Artifactory ##############################
