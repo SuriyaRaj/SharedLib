@@ -1,0 +1,50 @@
+ @Library('shared_lib_1')_
+node(label:'master') {
+   def mvnHome
+   stage('Preparation') { // for display purposes
+      // Get some code from a GitHub repository
+      git 'https://github.com/Haju123/MVC.git'
+      // Get the Maven tool. 
+      // ** NOTE: This 'M3' Maven tool must be configured
+      // **       in the global configuration.           
+     mvnHome = tool 'M3_Home'
+   }
+
+  stage('Build'){
+   withSonarQubeEnv('Sonar') {
+     sh "'${mvnHome}/bin/mvn' clean install sonar:sonar -Dsonar.host.url=http://104.43.255.181  -Dsonar.login=cd54cbeeec7893946b3bba8d0ef1fd831e3222f6"
+   } 
+}
+   
+   stage('Notify')
+   {
+   emailext (
+      subject: "STARTED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
+      body: """<p>STARTED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]':</p>
+        <p>Check console output at "<a href="${env.BUILD_URL}">${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>"</p>""",
+      recipientProviders: [[$class: 'DevelopersRecipientProvider']]
+    )
+   } 
+   
+   stage('Sonar Quality gate')
+   {   withSonarQubeEnv('SonarQube1') { 
+      timeout(time: 1, unit: 'HOURS') { 
+           def qg = waitForQualityGate() 
+           if (qg.status != 'OK') {
+             error "Pipeline aborted due to quality gate failure: ${qg.status}"
+           }
+        }
+   }
+   
+   }
+   stage('Build docker image for war file')
+   {
+      sh "docker build -t hajira/project:${BUILD_NUMBER} ."
+   }
+   
+   stage('Deploy artifacts')
+   {
+    artifactorylib "Artifactory1","./target/*.jar","libs-snapshot-repo"
+   }
+   
+}
