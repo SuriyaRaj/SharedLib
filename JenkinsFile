@@ -20,7 +20,8 @@ try
 
    stage('Initialization and Set up') 
    { 
-      SetUpfile "https://github.com/SuriyaRaj/MVC.git"
+      git "https://github.com/SuriyaRaj/MVC.git"
+      //SetUpfile "https://github.com/SuriyaRaj/MVC.git"
    }
 
 //############ Build and Quality check with Sonar Qube ###########################
