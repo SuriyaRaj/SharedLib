@@ -23,28 +23,21 @@ try
       SetUpfile "https://github.com/Haju123/MVC.git"
    }
 
-//############ Build and Quality check with Sonar Qube ########################
+//############ Build and Quality check with Sonar Qube ###########################
+
   stage('Build and Quality check with SonarQube')
   {
       SonarQube "Sonar","M3_HOME","http://104.43.255.181","cd54cbeeec7893946b3bba8d0ef1fd831e3222f6"
   }
-  
-  
-
-   
-  
-   
+ 
+ //#################### Sonar Quality Gate #########################################
+     
    stage('Sonar Quality gate')
-   {   withSonarQubeEnv('SonarQube1') { 
-      timeout(time: 1, unit: 'HOURS') { 
-           def qg = waitForQualityGate() 
-           if (qg.status != 'OK') {
-             error "Pipeline aborted due to quality gate failure: ${qg.status}"
-           }
-        }
+   {
+       SonarQualityGate "Sonar"
    }
    
-   }
+   
    stage('Build docker image for war file')
    {
       sh "docker build -t hajira/project:${BUILD_NUMBER} ."
