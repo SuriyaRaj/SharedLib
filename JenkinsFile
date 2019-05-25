@@ -36,12 +36,14 @@ try
    {
        SonarQualityGate "Sonar"
    }
+  
+  //#################### Docker image creation and pushing to Docker hub #################
    
-   
-   stage('Build docker image for war file')
+   stage('Build docker image for war file and pushing to hub')
    {
-      sh "docker build -t hajira/project:${BUILD_NUMBER} ."
+      DockerImage&Push "hajira/project","DockerHub"
    }
+   
    
    stage('Deploy artifacts')
    {
