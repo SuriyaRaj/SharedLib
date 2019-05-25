@@ -1,4 +1,4 @@
-@Library('shared_lib_1')_
+@Library('SharedLib')_
 
 node(label:'master') 
 {
@@ -20,35 +20,35 @@ try
 
    stage('Initialization and Set up') 
    { 
-      SetUpfile "https://github.com/Haju123/MVC.git"
+      SetUpfile "https://github.com/SuriyaRaj/MVC.git"
    }
 
 //############ Build and Quality check with Sonar Qube ###########################
 
   stage('Build and Quality check with SonarQube')
   {
-      SonarQube "Sonar","M3_HOME","http://104.43.255.181","cd54cbeeec7893946b3bba8d0ef1fd831e3222f6"
+      SonarQube "SonarQube","MAVEN_HOME","http://23.96.41.202:9000","6fe03b350d2b961468e5d1fc5866c4d7ad11ce56"
   }
  
  //#################### Sonar Quality Gate #########################################
      
    stage('Sonar Quality gate')
    {
-       SonarQualityGate "Sonar"
+       SonarQualityGate "SonarQube"
    }
   
   //#################### Docker image creation and pushing to Docker hub #################
    
    stage('Build docker image for war file and pushing to hub')
    {
-      DockerImage&Push "hajira/project","DockerHub"
+      DockerImage&Push "suriaraj/project","DockerHub"
    }
    
  //################## Storing war in JFrog Artifactory ##############################
    
    stage('Deploy artifacts')
    {
-     artifactorylib "Artifactory","./target/*.jar","libs-snapshot-repo"
+     artifactorylib "JFrogArt1","./target/*.jar","Snapshot"
    }
    
 //###################### Sending Success Notification #################################
