@@ -10,13 +10,9 @@ node(label:'master') {
      mvnHome = tool 'M3_Home'
    }
 
-  stage('Build'){
-   withSonarQubeEnv('Sonar') {
-     sh "'${mvnHome}/bin/mvn' clean install sonar:sonar -Dsonar.host.url=http://104.43.255.181  -Dsonar.login=cd54cbeeec7893946b3bba8d0ef1fd831e3222f6"
-   } 
-}
-   
-   stage('Notify')
+
+//########### Sending Job Start Email #################################
+ stage('Job started Email Notification')
    {
    emailext (
       subject: "STARTED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
@@ -25,6 +21,16 @@ node(label:'master') {
       recipientProviders: [[$class: 'DevelopersRecipientProvider']]
     )
    } 
+
+
+//############ Build and Quality check with Sonar Qube ########################
+  stage('Build and Quality check with SonarQube')
+  {
+      SonarQube "Sonar","M3_HOME","http://104.43.255.181","cd54cbeeec7893946b3bba8d0ef1fd831e3222f6"
+  }
+
+   
+  
    
    stage('Sonar Quality gate')
    {   withSonarQubeEnv('SonarQube1') { 
