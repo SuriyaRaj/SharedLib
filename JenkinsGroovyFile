@@ -44,7 +44,7 @@ node(label:'master') {
    
    stage('Deploy artifacts')
    {
-    artifactorylib "Artifactory1","./target/*.jar","libs-snapshot-repo"
+    artifactorylib "Artifactory","./target/*.jar","libs-snapshot-repo"
    }
    
 }
